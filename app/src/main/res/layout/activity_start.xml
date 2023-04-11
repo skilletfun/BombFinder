@@ -17,17 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="by Sergey Laptev"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <Button
         android:id="@+id/startButton"
         android:layout_width="150dp"
@@ -77,5 +66,17 @@
             android:text="Radius: 3 m"
             android:textColor="#FFFFFF" />
     </RadioGroup>
+
+    <ImageButton
+        android:id="@+id/git"
+        android:layout_width="48sp"
+        android:layout_height="48sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:padding="0px"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/github" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

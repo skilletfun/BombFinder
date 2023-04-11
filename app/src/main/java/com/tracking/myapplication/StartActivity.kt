@@ -1,8 +1,10 @@
 package com.tracking.myapplication
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,13 @@ class StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_start)
+
+        val git = findViewById(R.id.git) as ImageButton
+        git.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/skilletfun/BombFinder"))
+            startActivity(browserIntent)
+        }
+
         generate()
     }
 
