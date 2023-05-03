@@ -1,16 +1,12 @@
 package com.tracking.myapplication
 
-import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.Image
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,7 +19,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     val position = Position(doubleArrayOf(0.0, 0.0))
 
     var sensorA: Sensor? = null
-//    var sensorR: Sensor? = null
+    var sensorR: Sensor? = null
 
     private val nano2sec = 0.000000001
     private var startTime: Double = System.nanoTime() * nano2sec
@@ -44,9 +40,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
 
-//        val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-//        sensorR = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
-//        sensorManager.registerListener(this, sensorR, SensorManager.SENSOR_DELAY_NORMAL)
+        val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        sensorR = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+        sensorManager.registerListener(this, sensorR, SensorManager.SENSOR_DELAY_NORMAL)
 
         var btn = findViewById<Button>(R.id.reset)
         btn.setOnClickListener {
@@ -67,7 +63,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         if (find_now) {
             if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) {
-                if (event.values[1] > 1.0f) {
+                if (event.values[1] > 2.0f) {
                     if (!step_now && System.nanoTime() * nano2sec - startTime > 2.0) {
                         startTime = System.nanoTime() * nano2sec
                         step_now = true
@@ -81,22 +77,18 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 }
             }
         }
-        val Rot = FloatArray(9)
-        val Iot = FloatArray(9)
-        val gr = FloatArray(9)
-        val geo = FloatArray(9)
-        val values = FloatArray(3)
-        SensorManager.getRotationMatrix(Rot, Iot, gr, geo)
-        SensorManager.getOrientation(Rot, values)
 
-        rotation = values[0]
-        var str_rotation = round(rotation * 180 / Math.PI).toString()
-        str_rotation = str_rotation.substring(0, str_rotation.length-2)
-        val a = findViewById<TextView>(R.id.angleValue)
-        val x = (round(position.x * 10)/10).toString()
-        val y = (round(position.y * 10)/10).toString()
-        val pos = "α: " + str_rotation + "°; X: " + x + "; Y: " + y
-        a.text = pos
+        if (event.sensor.type == Sensor.TYPE_ORIENTATION) {
+
+            rotation = (event.values[0] * Math.PI / 180).toFloat()
+            var str_rotation = round(rotation * 180 / Math.PI).toString()
+            str_rotation = str_rotation.substring(0, str_rotation.length-2)
+            val a = findViewById<TextView>(R.id.angleValue)
+            val x = (round(position.x * 10)/10).toString()
+            val y = (round(position.y * 10)/10).toString()
+            val pos = "α: " + str_rotation + "°; X: " + x + "; Y: " + y
+            a.text = pos
+        }
 
         if (find_now) {
             val level = updateSignal()
