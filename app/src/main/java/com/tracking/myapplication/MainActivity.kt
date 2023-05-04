@@ -1,10 +1,13 @@
 package com.tracking.myapplication
 
+//import android.R
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -35,6 +38,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     var bombs: BooleanArray = BooleanArray(3){false}
 
+    var level = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
@@ -63,7 +68,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         if (find_now) {
             if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) {
-                if (event.values[1] > 2.0f) {
+                if (event.values[1] > 1.5f) {
                     if (!step_now && System.nanoTime() * nano2sec - startTime > 2.0) {
                         startTime = System.nanoTime() * nano2sec
                         step_now = true
@@ -135,6 +140,22 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         signal.visibility = View.VISIBLE
 
         find_now = true
+
+        beep()
+    }
+
+    fun beep() {
+        val timer = object: CountDownTimer(((8 - level)*100).toLong(), ((8 - level)*100).toLong()) {
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                val mp: MediaPlayer = MediaPlayer.create(this@MainActivity, R.raw.beep)
+                mp.start()
+                if (find_now) {
+                    beep()
+                }
+            }
+        }
+        timer.start()
     }
 
     fun solvePosition() {
@@ -151,7 +172,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     fun updateSignal(): Int {
         val signal = findViewById<ImageView>(R.id.signal)
-        var level = 0
+        level = 0
 
         if (!bombs[0]) {
             val d1 = (abs(position.x - bomb1[0]) + abs(position.y - bomb1[1]))/2
